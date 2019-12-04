@@ -27,12 +27,14 @@
 .stateText {
   font-family: sans-serif;
   fill: #fff;
-  text-anchor: middle;
+  font-size: 14px;
+  text-anchor: "middle";
+  
 }
 
 .stateCircle {
   fill: #89bdd3;
-  stroke: #e3e3e3;
+  stroke: #363535;
 }
 
 .chart {

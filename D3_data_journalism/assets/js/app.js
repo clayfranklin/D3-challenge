@@ -31,7 +31,7 @@ d3.csv("assets/data/data.csv").then(function(demo_data) {
         data.income = +data.income;
         data.obesity = +data.obesity;
 
-        console.log(data.income)
+        // console.log(data.income)
       });
      
   
@@ -58,64 +58,85 @@ d3.csv("assets/data/data.csv").then(function(demo_data) {
   
       chartGroup.append("g")
         .call(leftAxis);
-  
-      // Step 5: Create Circles
-      // ==============================
+
+      // Make circles
+          // ==============================
       var circlesGroup = chartGroup.selectAll("circle")
         .data(demo_data)
         .enter()
         .append("circle")
         .attr("cx", d => xLinearScale(d.income))
         .attr("cy", d => yLinearScale(d.obesity))
+        .attr("text", "dammit")
         .attr("r", "15")
-        .attr("opacity", ".5")
-        .on("click", function(d, i) {
-            alert(`${d.abbr} poverty level: ${d.income} obesity level: ${d.obesity}`);
-        })
-        .on("mouseover", function() {
-            d3.select(this)
-                .attr("fill", "blue");
-        })
-        .style("stateCircle", true)
-        .style("inactive:hover", true) 
+        .attr("opacity", ".7")
+        .classed("stateCircle", true)
+        // .text(function(d) {
+        //     return d.abbr;
+              // })
+        // .on("click", function(d, i) {
+        //     alert(`${d.abbr} average income: ${d.income} obesity %: ${d.obesity}`);
+        // })
+        // .on("mouseover", function() {
+        //     d3.select(this)
+        //         .attr("fill", "blue");
+        // })
+        
         ;
+      // Make Abbreviations on each circle
+          // ==============================
+      var stateLabels = chartGroup.selectAll("circles")
+        .data(demo_data)
+        .enter()
+        .append("text")
+        .attr("x", function(d) {
+          return xLinearScale(d.income)-10;
+           })
+        .attr("y", function(d) {
+          return yLinearScale(d.obesity)+5;
+           }) 
+        .text(function(d) {
+          return d.abbr;
+            })
+        .classed("stateText", true)
+        ;
+
     // Create axes labels
-    chartGroup.append("text")
+    // ==============================
+      chartGroup.append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 0 - margin.left + 40)
         .attr("x", 0 - (height / 2))
-        .attr("class", "text")
-        .text("Income Rate")
-        .style("aText");
+        .text("Obesity")
+        .classed("aText", true);
 
-    chartGroup.append("text")
+      chartGroup.append("text")
         .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
-        .attr("class", "text")
-        .text("Obesity Level")
-        .style("aText");
-  
-      // Step 6: Initialize tool tip
-      // ==============================
-    var toolTip = d3.tip()
+        .text("Income")
+        .classed("aText", true);
+        
+    // Make tooltip
+   // ==============================
+      var toolTip = d3.tip()
         .attr("class", "d3-tip")
-        .offset([-8, 0])
         .html(function(d) {
-          return (`${d.abbr}<br>poverty level: ${d.income}<br>obesity level: ${d.obesity}`);
+          return (`${d.abbr}<br>income level: ${d.income}<br>obesity level: ${d.obesity}`);
         });
   
-      // Step 7: Create tooltip in the chart
+      //  Create tooltip in the chart
       // ==============================
       chartGroup.call(toolTip);
   
-      // Step 8: Create event listeners to display and hide the tooltip
+      // Create event listeners to display and hide the tooltip
       // ==============================
-      circlesGroup.on("click", function(data) {
+      circlesGroup.on("mouseover", function(data) {
         toolTip.show(data, this);
       })
         // onmouseout event
-        .on("mouseout", function(data, index) {
-          toolTip.hide(data);
+      circlesGroup.on("mouseout", function(data) {
+        toolTip.hide(data);
         });
+
     }).catch(function(error) {
         console.log(error);
 
